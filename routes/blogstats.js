@@ -7,14 +7,16 @@ const router = express.Router();
 const blog_url = "https://intent-kit-16.hasura.app/api/rest/blogs";
 
 function analyse(Blogs){
-    console.log("Number of blogs fetched : "+analyser.totalNoOfBlogs(Blogs));
     
-    console.log(analyser.longestBlog(Blogs));
+    let obj = {
+        totalNoOfBlogs : analyser.totalNoOfBlogs(Blogs),
+        longestBlog : analyser.longestBlog(Blogs),
+        titlesWithPrivacy : analyser.titlesWithPrivacy(Blogs),
+        uniqueTitle : analyser.findUinque(Blogs)
+    }
+    
+    return JSON.stringify(obj);
 
-    console.log("no of blogs containing word privacy : "+analyser.titlesWithPrivacy(Blogs));
-    
-    let uniqueTitles = analyser.findUinque(Blogs);
-    
 };
 
 
@@ -25,10 +27,11 @@ router.get("/",async (req,res)=>{
                 'x-hasura-admin-secret':process.env.KEY
             }
         });
-        let  Blogs = result.data.blogs
-        analyse(Blogs);
+        let  Blogs = result.data.blogs;
+        let response = analyse(Blogs);
         
-        res.send("<h1>data is fetched.</h1>");
+        res.send(response);
+
         }catch (error) {
             console.log(error);
         }

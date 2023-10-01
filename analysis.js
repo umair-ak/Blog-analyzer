@@ -8,7 +8,7 @@ function totalNoOfBlogs(allBlogs){
 // Find the longest title among all the blogs.
 function longestBlog(allBlogs){
     let longest = "";
-    console.log(allBlogs[0]);
+    
     allBlogs.forEach(blog => {
         let title = blog.title;
         if(_.size(title)>_.size(longest)){
