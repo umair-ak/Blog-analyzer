@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require("express");
-const axios = require("axios");
 const analyser = require("./../analysis");
+const {MgetBlogs} = require("./../getblogs");
+const _ = require("lodash");
 const router = express.Router();
 
 const blog_url = "https://intent-kit-16.hasura.app/api/rest/blogs";
@@ -16,25 +17,21 @@ function analyse(Blogs){
     }
     
     return JSON.stringify(obj);
-
 };
 
+let M_analyser = _.memoize(analyse);
 
 router.get("/",async (req,res)=>{
-    try {
-        const result = await axios.get(blog_url,{
-            headers:{
-                'x-hasura-admin-secret':process.env.KEY
-            }
-        });
-        let  Blogs = result.data.blogs;
-        let response = analyse(Blogs);
-        
-        res.send(response);
 
-        }catch (error) {
-            console.log(error);
-        }
+    let result = await MgetBlogs(blog_url);
+    
+    if(result.length === 0){
+        console.log("no blogs retrieved")
+    }else{
+        let  Blogs = result.data.blogs;    
+        let response = M_analyser(Blogs);
+        res.send(response);
+    }
     
 });
 

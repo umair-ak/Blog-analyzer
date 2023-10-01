@@ -1,10 +1,10 @@
-const { toLower } = require("lodash");
+const _ = require("lodash");
 function searchBlogs(allBlogs,userquery){
     let foundBlogs = [];
     
     allBlogs.forEach(blog => {
 
-        let title = toLower(blog.title);
+        let title = _.toLower(blog.title);
         if(title.includes(userquery)){
             foundBlogs.push(blog);
         }
@@ -13,6 +13,8 @@ function searchBlogs(allBlogs,userquery){
     return foundBlogs;
 }
 
+let M_search = _.memoize(searchBlogs);
+
 module.exports = {
-    searchBlogs
+    M_search
 }
